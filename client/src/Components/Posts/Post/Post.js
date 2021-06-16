@@ -51,11 +51,11 @@ const Post = ({ post, setCurrentId }) => {
         </Typography>
       </div>
 
-      <Typography className={classes.title} variant="h5" gutterBottom>
+      <Typography className={classes.title} variant="h5" componen='p' gutterBottom>
         {post.title}
       </Typography>
       <CardContent>
-        <Typography variant="body1" gutterBottom>
+        <Typography color="textSecondary" variant="body2" component="p">
           {post.message}
         </Typography>
       </CardContent>
@@ -63,12 +63,12 @@ const Post = ({ post, setCurrentId }) => {
       <CardActions className={classes.cardActions}>
         <Button size="small" color="primary" onClick={() => dispatch(likePost(post._id))}>
           <ThumbUpAltIcon fontSize="small" />
-          Like
+          &nbsp; Like &nbsp;
           {post.likeCount}
         </Button>
 
         <Button size="small" color="primary" onClick={() => dispatch(deletePost(post._id))}>
-          Delete
+        &nbsp; Delete
           <DeleteIcon fontSize="small" />
         </Button>
       </CardActions>

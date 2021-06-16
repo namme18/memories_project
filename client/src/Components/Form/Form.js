@@ -102,7 +102,7 @@ const Form = ({currentId, setCurrentId}) => {
           label="Tags"
           fullWidth
           value={data.tags}
-          onChange={onChange}
+          onChange={e => setData({...data, tags: e.target.value.split(',')})}
         />
 
         <div className={classes.fileInput}>
