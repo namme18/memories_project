@@ -11,7 +11,8 @@ app.use(cors());
 
 //use routes
 
-app.use('/', require('./routes/posts'))
+app.use('/', require('./routes/posts'));
+app.use('/', require('./routes/user'));
 
 const db = config.get('mongoURI');
 
@@ -20,7 +21,7 @@ mongoose
         useCreateIndex:true, 
         useNewUrlParser:true, 
         useUnifiedTopology:true,
-        useFindAndModify: true})
+        useFindAndModify: false})
     .then(res => console.log('MongoDb connected!'))
     .catch(err => console.log(err.message));
 

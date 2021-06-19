@@ -11,10 +11,11 @@ const Form = ({currentId, setCurrentId}) => {
 
   const dispatch = useDispatch();
   const { posts } = useSelector(state => state.postsReducer);
+  const { user } = useSelector(state => state.authReducer);
   const post = currentId ? posts.find(p => p._id === currentId): null;
 
   const [data, setData] = useState({
-    creator: '',
+    name: user?.name,
     title: '',
     message: '',
     tags: '',
@@ -50,12 +51,21 @@ const Form = ({currentId, setCurrentId}) => {
   const clear = () => {
       setCurrentId(null);
       setData({
-        creator: '',
         title: '',
         message: '',
         tags: '',
         selectedFile: null,
       });
+  }
+
+  if(!user){
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant='h6' align='center'>
+          Please Sign In to create your own memories and like other's memories!
+        </Typography>
+      </Paper>
+    )
   }
 
   return (
@@ -67,16 +77,6 @@ const Form = ({currentId, setCurrentId}) => {
         className={`${classes.form} ${classes.root}`}
       >
         <Typography variant="h6">{currentId ? 'Editing' : 'Creating' } a Memory</Typography>
-
-        <TextField
-          className={classes.textField}
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={data.creator}
-          onChange={onChange}
-        />
 
         <TextField
           name="title"

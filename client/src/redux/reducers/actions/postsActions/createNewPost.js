@@ -1,20 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createPost, isLoaded, isLoading } from '../../postsReducer';
 import axios from 'axios';
+import { tokenConfig } from '../tokenConfig';
 
-export const createNewPost = createAsyncThunk('createNewPost', async (newPost, {dispatch, rejectWithValue}) => {
+export const createNewPost = createAsyncThunk('createNewPost', async (newPost, {dispatch, getState, rejectWithValue}) => {
     dispatch(isLoading());
-    //config
-    const config = {
-        headers:{
-            'Content-type': 'application/json'
-        }
-    }
-
     //body
     const body = JSON.stringify(newPost);
     
-    return axios.post('/addpost', body, config)
+    return axios.post('/addpost', body, tokenConfig(getState))
         .then(res => {
             dispatch(createPost(res.data));
             dispatch(isLoaded());

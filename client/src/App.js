@@ -1,49 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  AppBar,
-  Typography,
-  Grow,
-  Grid
-} from '@material-ui/core';
-import memories from './images/memories.png';
-import Posts from './Components/Posts/Posts';
-import Form from './Components/Form/Form';
-import useStyles from './styles';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPosts } from './redux/reducers/actions/postsActions/getAllPosts';
-
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { Container } from '@material-ui/core';
+import Home from './Components/Home/Home';
+import NavBar from './Components/NavBar/NavBar ';
+import Auth from './Components/Auth/Auth';
+import AuthRoute from './Components/ProtectedRoute/AuthRoute';
+import decode from 'jwt-decode';
+import { logoutUser } from './redux/reducers/authReducer';
 
 const App = () => {
 
-  const classes = useStyles();
   const dispatch = useDispatch();
-  const posts = useSelector(state => state.postReducer);
-  const [currentId, setCurrentId] = useState(null);
-
+  const { user } = useSelector(state => state.authReducer);
   useEffect(() => {
+    if(user?.token){
+      const decodedToken = decode(user?.token);
+      if(decodedToken.exp * 1000 < new Date().getTime())
+      dispatch(logoutUser());
+    }
     dispatch(getAllPosts());
-  },[dispatch, posts]);
+  },[dispatch]);
 
   return(
-    <Container maxWidth='lg'>
-      <AppBar className={classes.appBar} position='static' color='inherit'>
-        <Typography className={classes.heading} variant='h2' align='center'>Memories</Typography>
-        <img className={classes.image} src={memories} alt='memories' height='60' />
-      </AppBar>
-      <Grow in>
-        <Container>
-          <Grid className={classes.mainContainer} container justify='space-between' alignItems='stretch' spacing={3}>
-            <Grid item xs={12} sm={7}>
-              <Posts setCurrentId={setCurrentId} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Form currentId ={currentId} setCurrentId={setCurrentId} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Grow>
-    </Container>
+    <Router>
+      <Container maxWidth='lg'>
+        <NavBar />
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <AuthRoute exact path='/auth' component={Auth} />
+        </Switch>
+      </Container>
+    </Router>
   )
 }
 
