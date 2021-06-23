@@ -7,6 +7,7 @@ import {
   CardMedia,
   Typography,
   Button,
+  ButtonBase,
 } from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
@@ -16,11 +17,13 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePost } from '../../../redux/reducers/actions/postsActions/deletePost';
 import { likePost } from '../../../redux/reducers/actions/postsActions/likePost';
+import { useHistory } from 'react-router-dom';
 
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { user } = useSelector(state => state.authReducer);
+  const history = useHistory();
 
   const Likes = () => {
     if(post.likes.length > 0){
@@ -33,8 +36,11 @@ const Post = ({ post, setCurrentId }) => {
     return  <><ThumbUpAltOutlined fontSize='small' />&nbsp;Like </>;
   }
 
+  const openPost = () => history.push(`/posts/${post._id}`);
+
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
+      <ButtonBase className={classes.cardAction} onClick={openPost}>
       <CardMedia
         className={classes.media}
         image={post.selectedFile}
@@ -75,7 +81,7 @@ const Post = ({ post, setCurrentId }) => {
           {post.message}
         </Typography>
       </CardContent>
-
+      </ButtonBase>
       <CardActions className={classes.cardActions}>
         <Button size="small" disabled={!user} color="primary" onClick={() => dispatch(likePost(post._id))}>
           <Likes />

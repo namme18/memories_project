@@ -1,17 +1,43 @@
 const mongoose = require('mongoose');
 const PostMessage = require('../models/Post');
 
-exports.getPosts = (req ,res) => {
+exports.getPosts = async(req ,res) => { // get posts by page
+    const { page } = req.query;
+    const LIMIT = 8; // delclare limit
+    const startIndex = (Number(page)- 1) * LIMIT; //start index
+    const totalPosts = await PostMessage.countDocuments({});
     PostMessage.find()
-        .sort({createdAt: -1})
+        .sort({_id: -1})
+        .limit(LIMIT)
+        .skip(startIndex)
         .then(postMessages => {
-            return res.status(200).json(postMessages);
+            return res.status(200).json({
+                data: postMessages,
+                currentPage: Number(page),
+                numberOfPage: Math.ceil(totalPosts / LIMIT)
+            });
         })
         .catch(err => {
             return res.status(404).json({
                 msg: err.message
             });
         })
+}
+
+exports.searchPosts = (req, res) => {
+    const {searchQuery, tags} = req.query;
+    
+    const title = new RegExp(searchQuery, 'i');
+    PostMessage.find({$or:[{title},{tags: {$in: tags.split(',')}}]})
+        .then(posts => {
+            res.status(200).json(posts);
+        })
+        .catch(err => {
+            res.status(400).json({
+                msg: "can't search post!"
+            })
+        })
+
 }
 
 exports.createPost = (req, res) => {

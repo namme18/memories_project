@@ -6,7 +6,8 @@ import {
     Button,
     Avatar
   } from '@material-ui/core';
-import memories from '../../images/memories.png';
+import memoriesText from '../../images/memories-Text.png';
+import memoriesLogo from '../../images/memories-Logo.png';
 import useStyles from './style';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,24 +22,18 @@ const NavBar = () => {
     }
     return (
     <AppBar className={classes.appBar} position="static" color="inherit">
-      <div className={classes.brandContainer}>
-      <Typography 
-      className={classes.heading} 
-      variant="h2" 
-      align="center"
-      component={Link}
-      to='/'
-      >
-        Memories
-      </Typography>
-
+      <Link to='/' className={classes.brandContainer}>
+      <img 
+        src={memoriesText} alt='icon' height='45px'
+      />
       <img
         className={classes.image}
-        src={memories}
+        src={memoriesLogo}
         alt="memories"
-        height="60"
+        height="
+        40px"
       />
-      </div>
+      </Link>
 
       <Toolbar className={classes.toolbar}>
         {user ? (
