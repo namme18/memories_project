@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { loadUser, logoutUser } from "../../authReducer";
+import { clearErrors } from "../../errorReducer";
 
 export const login = createAsyncThunk('login', async (user, {dispatch, rejectWithValue}) => {
     //config
@@ -17,6 +18,7 @@ export const login = createAsyncThunk('login', async (user, {dispatch, rejectWit
                 result : res.data.user,
                 token: res.data.token
             }
+            dispatch(clearErrors());
             return dispatch(loadUser(userData));
         })
         .catch(err => {

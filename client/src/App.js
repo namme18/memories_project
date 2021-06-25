@@ -8,19 +8,16 @@ import NavBar from './Components/NavBar/NavBar ';
 import Auth from './Components/Auth/Auth';
 import AuthRoute from './Components/ProtectedRoute/AuthRoute';
 import PostDetails from './Components/PostDetails/PostDetails';
-import decode from 'jwt-decode';
 import { logoutUser } from './redux/reducers/authReducer';
 
 const App = () => {// not working!
   const dispatch = useDispatch(); 
-  const { user } = useSelector(state => state.authReducer);
+  const { id } = useSelector(state => state.errorReducer);
   useEffect(() => {
-    if(user?.token){
-      const decodedToken = decode(user?.token);
-      if(decodedToken.exp * 1000 < new Date().getTime())
+    if(id === 'AUTHENTICATION_FAIL'){
       dispatch(logoutUser());
     }
-  },[dispatch]);
+  },[id]);
 
   return(
     <Router>

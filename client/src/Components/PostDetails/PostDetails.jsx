@@ -4,25 +4,41 @@ import {
     Paper,
     Typography,
     CircularProgress,
-    Divider
+    Divider,
+    Grid
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useHistory } from 'react-router-dom';
+import { searchPosts } from '../../redux/reducers/actions/postsActions/searchPosts';
+import { getOnePost } from '../../redux/reducers/actions/postsActions/getOnePost';
 
 const PostDetails = () => { 
     const classes = useStyles();
-    const { posts, isLoading } = useSelector(state => state.postsReducer);
+    const { post, posts, isLoading } = useSelector(state => state.postsReducer);
     const dispatch = useDispatch();
     const history = useHistory();
     const { id } = useParams();
-    const [post] = posts.filter(post => id === post._id);
+    const recommendedPosts = posts?.filter(p => p._id !== id);
+    useEffect(() => {
+        if(posts){
+            dispatch(getOnePost(id));
+        }
+    },[id]);
 
-    if(isLoading){
+    useEffect(() => {
+        if(post){
+            dispatch(searchPosts({search:'none', Tags: post.tags.join(',')}));
+        }
+    },[post]);
+
+    if(!post || isLoading){
         return (
             <CircularProgress  className={classes.loadingPaper} size='7em' />
         )
     }
+
+    const openPost = (id) => history.push(`/posts/${id}`);
 
     return (
         <Paper style={{padding:'20px', borderRadius: '15px'}} elevation={6}>
@@ -72,6 +88,23 @@ const PostDetails = () => {
                        <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
                    </div>
             </div>
+            {recommendedPosts && (
+                <div className={classes.section}>
+                    <Typography gutterBottom variant='h5'>You might also like:</Typography>
+                    <Divider/>
+                    <Grid container spacing={3}>
+                    {recommendedPosts.map(({title, message, name, likes, selectedFile, _id}) => (
+                        <Grid item style={{margin: '20px 0', cursor: 'pointer'}} key={_id} onClick={() => openPost(_id)} xs={12} sm={12} md={4} lg={3} alignItems='center'>
+                            <Typography gutterbottom variant='h6'>{title}</Typography>
+                            <Typography gutterbottom variant='subtitle2'>{name}</Typography>
+                            <Typography gutterbottom variant='subtitle2'>{message}</Typography>
+                            <Typography gutterbottom variant='subtitle1'>Likes: {likes.length}</Typography>
+                            <img src={selectedFile} alt={name} />
+                        </Grid>
+                    ))}
+                    </Grid>
+                </div>
+            )}
         </Paper>
     )
 }

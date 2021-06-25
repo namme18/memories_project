@@ -29,7 +29,7 @@ const auth = async (req, res, next) => {
         }
         next();
     }catch(err){
-        return res.status(401).json({msg: 'Not Authorize to access this route'});
+        return res.status(401).json({msg: 'Not Authorize to access this route', id: 'AUTHENTICATION_FAIL'});
     }
 }
 

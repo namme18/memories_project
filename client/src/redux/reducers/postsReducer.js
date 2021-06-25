@@ -4,12 +4,20 @@ export const postsReducer = createSlice({
     name: 'postsReducer',
     initialState: {
         posts: [],
+        post:null,
         msg:'',
         numberOfPage: null,
         currentPage: null,
         isLoading: false
     },
     reducers: {
+        singlePost: (state, action) => {
+            return{
+                ...state,
+                post: action.payload
+            }
+        },
+
         searchPost: (state, action) => {
             return {
                 ...state,
@@ -25,6 +33,7 @@ export const postsReducer = createSlice({
                 posts: action.payload.data,
                 numberOfPage: action.payload.numberOfPage,
                 currentPage: action.payload.currentPage,
+                post:null,
                 msg: '',
             }
         },
@@ -70,5 +79,5 @@ export const postsReducer = createSlice({
     }
 });
 
-export const { loadPosts, createPost, updatedPost, deletedPost, isLoading, isLoaded, searchPost } = postsReducer.actions;
+export const { loadPosts, createPost, updatedPost, deletedPost, isLoading, isLoaded, searchPost, singlePost } = postsReducer.actions;
 export default postsReducer.reducer;

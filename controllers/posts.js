@@ -24,6 +24,20 @@ exports.getPosts = async(req ,res) => { // get posts by page
         })
 }
 
+exports.getOnePost = (req, res) => {
+    
+    const { id } = req.params;
+    PostMessage.findById(id)
+        .then(post => {
+            return res.status(200).json(post);
+        })
+        .catch(err => {
+           return res.status(404).json({
+                msg: err.message
+            });
+        })
+}
+
 exports.searchPosts = (req, res) => {
     const {searchQuery, tags} = req.query;
     
